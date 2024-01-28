@@ -2,7 +2,7 @@
 
 const App = () => {
   return (
-    <div>WorldWise </div>
+    <div>WorldWise</div>
   )
 }
 
