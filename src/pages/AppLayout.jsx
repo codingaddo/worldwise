@@ -1,0 +1,13 @@
+import React from 'react'
+import Sidebar from '../Component/Sidebar'
+import styles from './AppLayout.module.css'
+
+const AppLayout = () => {
+  return (
+    <div className={styles.app}>
+      <Sidebar/>
+    </div>
+  )
+}
+
+export default AppLayout
