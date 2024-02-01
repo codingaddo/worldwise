@@ -42,7 +42,7 @@ const App = () => {
       <Route index element={<HomePage/>}/>
       <Route path="pricing" element={<Pricing/>}/>
       <Route path="product" element={<Product/>}/>
-      <Route path="/login" element={<Login/>}/>
+      <Route path="login" element={<Login/>}/>
 
       <Route path="app" element={<AppLayout/>}>
         <Route index element={<CityList cities={cities} isLoading={isLoading}/>}/>
