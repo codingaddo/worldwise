@@ -4,11 +4,14 @@ import styles from './AppLayout.module.css'
 import Map from '../Component/Map'
 
 const AppLayout = () => {
+  
   return (
     <div className={styles.app}>
       <Sidebar/>
       <Map/>
     </div>
+
+    
   )
 }
 
