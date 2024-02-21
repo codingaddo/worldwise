@@ -3,10 +3,12 @@ import styles from './Map.module.css'
 import { MapContainer,TileLayer,Marker,Popup, useMap, useMapEvent } from 'react-leaflet'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCity } from '../context/CityContext'
-import { latLng } from 'leaflet'
+import { useGeolocation } from '../hooks/useGeolocation'
+import Button from './Button'
 
 const Map = () => {
   const {cities}= useCity()
+  const {isLoading:isLoadingPosition, position:geoLocationPosition, getPosition} = useGeolocation()
   const [mapPosition,setMapPosition] = useState([40, 0])
   const [searchParams] = useSearchParams()
   const mapLat = searchParams.get('lat')
@@ -18,6 +20,7 @@ const Map = () => {
 
   return (
     <div className={styles.mapContainer}>
+      <Button type={'position'} onClick={getPosition}></Button>
         <MapContainer 
         className={styles.map}
          center={mapPosition} 
