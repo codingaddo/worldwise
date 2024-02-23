@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { MapContainer,TileLayer,Marker,Popup, useMap, useMapEvent } from 'react-leaflet'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import { useCity } from '../context/CityContext'
 import { useGeolocation } from '../hooks/useGeolocation'
 import styles from './Map.module.css'
@@ -10,7 +10,7 @@ import { useUrlPosition } from '../hooks/useUrlPosition'
 const Map = () => {
   const {cities}= useCity()
   const {isLoading:isLoadingPosition, position:geoLocationPosition, getPosition} = useGeolocation()
-  const {mapLat,mapLng} = useUrlPosition()
+  const [mapLat,mapLng] = useUrlPosition()
   const [mapPosition,setMapPosition] = useState([40, 0])
 
   //Extracting statefull logic into a custom hook
