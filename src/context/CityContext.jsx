@@ -1,30 +1,60 @@
-import { createContext, useEffect, useState, useContext} from "react";
+import { createContext, useEffect, useState, useContext, useReducer} from "react";
 const BASE_URL = 'http://localhost:9000'
 
 
 const CityContext = createContext()
 
-function CityProvider ({children}){
+const initialState ={
+  cities : [],
+  isLoading:false,
+  currentCity: {},
+  error : ''
+}
 
-    const [cities,setCities] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
-  const [currentCity,setCurrentCity] = useState({})
+function reducerFunc(state,action){
+  switch(action.type){
+    case 'loading':
+        return{...state,isLoading:true}
+
+    case 'cities/loaded':
+      return {...state,isLoading:false, cities:action.payload}
+
+    case 'cities/created' :
+      return{}
+    
+    case 'cities/deleted':
+      return{}
+    
+    case 'rejected' :
+      return{...state,error:action.payload}
+
+    default: throw new Error('Unknown action')      
+  }
+}
+
+function CityProvider ({children}){
+    // const [cities,setCities] = useState([])
+    // const [isLoading, setIsLoading] = useState(false)
+    // const [currentCity,setCurrentCity] = useState({})
+
+    const [state,dispatch] = useReducer(reducerFunc,initialState)
+    const {cities,isLoading,currentCity,error} = state
+
+
 
   
     useEffect(()=>{
       async function fetchCities(){
+        dispatch({type:'loading'})
         try{
-          setIsLoading(true);
         const res = await fetch(`${BASE_URL}/cities`)
         const data = await res.json()
-        setCities(data)
+        dispatch({type :'cities/loaded', payload:data})
       }
       catch{
-        alert('There was an error fetching data...')
+        dispatch({type:'rejected',payload:'There was an error fetching data...'})
       }
-      finally{
-        setIsLoading(false)
-      }
+    
     }
   
       fetchCities()
