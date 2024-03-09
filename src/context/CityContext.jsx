@@ -65,10 +65,12 @@ function CityProvider ({children}){
         
         async function getCity(id){
               try{
-                setIsLoading(true);
+              dispatch({type:'loading'})        
               const res = await fetch(`${BASE_URL}/cities/${id}`)
               const data = await res.json()
-              setCurrentCity(data)
+              dispatch({type:'loading'})
+              dispatch({type:'cities/created', payload:data})
+              // setCurrentCity(data)
             }
             catch{
               alert('There was an error fetching data...')
