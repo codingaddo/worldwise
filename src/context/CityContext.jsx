@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext, useReducer} from "react";
+import { createContext, useEffect, useContext, useReducer} from "react";
 const BASE_URL = 'http://localhost:9000'
 
 
@@ -17,13 +17,30 @@ function reducerFunc(state,action){
         return{...state,isLoading:true}
 
     case 'cities/loaded':
-      return {...state,isLoading:false, cities:action.payload}
+      return {...state,
+        isLoading:false, 
+        cities:action.payload
+      }
 
-    case 'cities/created' :
-      return{}
+    case 'city/loaded':
+      return {...state,
+        isLoading:false, 
+        currentCity:action.payload
+      }
+
+    case 'city/created' :
+      return{...state,
+        isLoading:false, 
+        cities:[...state.cities, action.payload],
+        currentCity:action.payload
+      }
     
-    case 'cities/deleted':
-      return{}
+    case 'city/deleted':
+      return{...state,
+        isLoading:false, 
+        cities:state.cities.filter(city => city.id!==action.payload),
+        currentCity:{}
+      }
     
     case 'rejected' :
       return{...state,error:action.payload}
@@ -33,16 +50,10 @@ function reducerFunc(state,action){
 }
 
 function CityProvider ({children}){
-    // const [cities,setCities] = useState([])
-    // const [isLoading, setIsLoading] = useState(false)
-    // const [currentCity,setCurrentCity] = useState({})
-
+   
     const [state,dispatch] = useReducer(reducerFunc,initialState)
     const {cities,isLoading,currentCity,error} = state
 
-
-
-  
     useEffect(()=>{
       async function fetchCities(){
         dispatch({type:'loading'})
@@ -64,26 +75,24 @@ function CityProvider ({children}){
 
         
         async function getCity(id){
-              try{
+              if(Number(id)===createCity.id) return 
               dispatch({type:'loading'})        
+              try{
               const res = await fetch(`${BASE_URL}/cities/${id}`)
               const data = await res.json()
               dispatch({type:'loading'})
-              dispatch({type:'cities/created', payload:data})
-              // setCurrentCity(data)
+              dispatch({type:'city/loaded', payload:data})
             }
             catch{
-              alert('There was an error fetching data...')
+              dispatch({type:'rejected', payload:'There was an error getting data'})
             }
-            finally{
-              setIsLoading(false)
-            }
+           
           }
 
 
           async function createCity(newCity){
+            dispatch({type:'loading'})        
             try{
-              setIsLoading(true);
             const res = await fetch(`${BASE_URL}/cities`, {
               // Creating a post request to an API
               method: "POST",
@@ -94,33 +103,29 @@ function CityProvider ({children}){
               
             })
             const data = await res.json()
-            setCities((cities)=>[...cities,data])
+            dispatch({type:'city/created',payload:data})
           }
           catch{
-            alert('There was an error creating city...')
+            dispatch({type:'rejected', payload:'There was an error creating citiy'})
           }
-          finally{
-            setIsLoading(false)
-          }
+         
         }
         
 
         async function deleteCity(id){
+          dispatch({type:'loading'})        
           try{
-            setIsLoading(true);
              await fetch(`${BASE_URL}/cities/${id}`, {
             // Creating a post request to an API
             method: "DELETE",
             
           })
-          setCities((cities)=> cities.filter(city => city.id!==id))
+          dispatch({type:'city/deleted',payload: id}) 
         }
         catch{
-          alert('There was an error deleting city...')
+          dispatch({type:'rejected', payload:'There was an error deleting city'})
         }
-        finally{
-          setIsLoading(false)
-        }
+       
       }
       
   
@@ -130,10 +135,9 @@ function CityProvider ({children}){
     return <CityContext.Provider 
         value={{
             isLoading,
-            setIsLoading,
             cities,
-            setCities,
             currentCity,
+            error,
             getCity,
             createCity,
             deleteCity
