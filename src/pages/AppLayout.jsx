@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from '../Component/Sidebar'
 import styles from './AppLayout.module.css'
 import Map from '../Component/Map'
+import User from '../Component/User'
 
 const AppLayout = () => {
   
@@ -9,6 +10,7 @@ const AppLayout = () => {
     <div className={styles.app}>
       <Sidebar/>
       <Map/>
+      <User/>
     </div>
 
     
