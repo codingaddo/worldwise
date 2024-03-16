@@ -1,19 +1,30 @@
-// import React from 'react'
+import { Suspense, lazy } from "react"
 
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
-import HomePage from "./pages/HomePage"
-import Pricing from "./pages/Pricing"
-import Product from "./pages/Product"
-import PageNotFound from "./pages/PageNotFound"
-import AppLayout from "./pages/AppLayout"
-import Login from "./pages/Login"
+import { CityProvider } from "./context/CityContext"
+import { AuthenticationProvider } from "./context/FakeAuthContextAPI"
+import ProtectedRout from "./pages/ProtectedRout"
+
+// import HomePage from "./pages/HomePage"
+// import Pricing from "./pages/Pricing"
+// import Product from "./pages/Product"
+// import PageNotFound from "./pages/PageNotFound"
+// import AppLayout from "./pages/AppLayout"
+// import Login from "./pages/Login"
+
 import CityList from "./Component/CityList"
 import CountryList from "./Component/CountryList"
 import City from "./Component/City"
 import Form from "./Component/Form"
-import { CityProvider } from "./context/CityContext"
-import { AuthenticationProvider } from "./context/FakeAuthContextAPI"
-import ProtectedRout from "./pages/ProtectedRout"
+import SpinnerFullPage from "./Component/SpinnerFullPage"
+
+const HomePage = lazy(()=>import('./pages/HomePage'))
+const Pricing = lazy(()=>import('./pages/Pricing'))
+const Login = lazy(()=>import('./pages/Login'))
+const Product = lazy(()=>import('./pages/Product'))
+const AppLayout = lazy(()=>import('./pages/AppLayout'))
+const PageNotFound = lazy(()=>import('./pages/PageNotFound'))
+
 
 
 const App = () => {
@@ -24,6 +35,8 @@ const App = () => {
     <AuthenticationProvider>
     <CityProvider>
     <BrowserRouter>
+    <Suspense fallback={<SpinnerFullPage/>}>
+
     <Routes>
       <Route index element={<HomePage/>}/>
       <Route path="pricing" element={<Pricing/>}/>
@@ -42,6 +55,7 @@ const App = () => {
       </Route>
       <Route path="*" element={<PageNotFound/>}/>
     </Routes>
+    </Suspense>
     </BrowserRouter>
     </CityProvider>
     </AuthenticationProvider>
